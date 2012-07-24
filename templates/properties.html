@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titlepath %} :: Properties{% endblock %}
+{% block content %}
+<form method="post">
+	<table>
+		{% for prop in properties -%}
+			<tr class="{{ loop.cycle('odd', 'even') }}">
+				<td class="propkey" title="default: {% if prop.default == '' %}unset{% else %}{{ prop.default }}{% endif %}">{{ prop.key }}</td>
+				<td>
+					{% if prop.type == 'bool' %}
+						<input type="checkbox" name="{{ prop.key }}" {% if prop.value %}checked="checked"{% endif -%} />
+					{% elif prop.type == 'enum' %}
+						<select name="{{ prop.key }}">
+							{% for opt in prop.enum -%}
+								<option value="{{ opt.key }}" {% if opt.hint %}title="{{ opt.hint }}"{% endif %} {% if opt.key == prop.value %}selected="selected"{% endif -%}>{% if not prop.hidekey %}{{ opt.key }} - {% endif %}{{ opt.value }}</option>
+							{% endfor %}
+						</select>
+					{% elif prop.type == 'string' %}
+						<input type="text" name="{{ prop.key }}" value="{{ prop.value }}" size="12" {% if prop.maxlength %}maxlength="{{ prop.maxlength }}"{% endif %} />
+					{% endif %}
+				</td>
+				<td class="propdesc">{{ prop.desc }}</td>
+			</tr>
+		{% endfor %}
+		<tr>
+			<td colspan="3">
+				<input type="submit" />
+			</td>
+		</tr>
+	</table>
+</form>
+{% endblock %}
