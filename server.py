@@ -18,12 +18,15 @@ class CommunicationError(Exception):
 	pass
 
 player_regex = re.compile(r"Connected players: (.*)\n")
+start_regex = re.compile(r"For help, type \"help\" or \"\?\"")
 
 process = None
 
 def start():
 	global process
 	#FIXME: check port (report old pid)
+	if running():
+		return False
 	mem = config.get('server_memory')
 	cmd = ['java', '-Xms%dM' % mem, '-Xmx%dM' % mem, '-jar', 'minecraft_server.jar', 'nogui']
 	process = subprocess.Popen(cmd, cwd='mcs',
@@ -31,12 +34,26 @@ def start():
 		stdout=open('/dev/null', 'w'),
 		stdin=subprocess.PIPE
 	)
+	oldsize = os.path.getsize('mcs/server.log') if os.path.isfile('mcs/server.log') else 0
+	for i in xrange(10):
+		if os.path.isfile('mcs/server.log'):
+			f = open('mcs/server.log')
+			f.seek(oldsize)
+			log = f.read()
+			f.close()
+			if start_regex.search(log):
+				return True
+		sleep(0.5)
+	raise NotRunning()
+
 
 def stop():
 	global process
+	if not running():
+		return False
 	cmd('stop')
 	for i in xrange(3):
-		if not process.poll() == None: return 0
+		if not process.poll() == None: return 1
 		sleep(1)
 	process.terminate()
 	for i in xrange(3):
@@ -48,6 +65,8 @@ def stop():
 
 def running():
 	try:
+		if not os.path.isfile('mcs/server.log'):
+			return False
 		return (process.poll() == None)
 	except:
 		return False
@@ -80,7 +99,7 @@ def connected_users():
 	try:
 		players = player_regex.search(mclog).group(1)
 		players = players.split(', ')
-		return players
+		return filter (lambda p: p != '', players)
 	except AttributeError:
 		raise CommunicationError()
 
