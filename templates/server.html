@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titlepath %} :: Server{% endblock %}
+{% block ctitle %}Server{% endblock %}
+{% block csubtitle %}Server status overview and administration{% endblock %}
+{% block content %}
+<form method="post" action="{{ url_for('server', action='action') }}">
+	<input type="submit" name="server
+</form>
+{% endblock %}

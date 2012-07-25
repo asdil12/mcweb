@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block titlepath %} :: Properties{% endblock %}
+{% block ctitle %}Properties{% endblock %}
+{% block csubtitle %}Properties defined in the server.properties file{% endblock %}
 {% block content %}
-<form method="post">
+<form method="post" action="{{ url_for('properties') }}">
 	<table>
 		{% for prop in properties -%}
 			<tr class="{{ loop.cycle('odd', 'even') }}">
