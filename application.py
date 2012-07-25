@@ -10,6 +10,8 @@ from ftools import fname, fparms
 from frontend import *
 import properties as props
 import server as mcs
+import os
+import sys
 app = Flask(__name__)
 
 @app.route('/status')
@@ -59,6 +61,15 @@ def logout():
 	return redirect(url_for('server'))
 
 if __name__ == '__main__':
+	if not os.path.isfile('mcs/minecraft_server.jar'):
+		print "Downloading minecraft_server.jar ... ",
+		sys.stdout.flush()
+		import urllib2
+		u = urllib2.urlopen('http://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar')
+		f = open('mcs/minecraft_server.jar', 'w')
+		f.write(u.read())
+		f.close()
+		print "DONE"
 	app.debug = True
 	app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 	app.run()
