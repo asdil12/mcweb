@@ -4,6 +4,17 @@
 {% block csubtitle %}Server status overview and administration{% endblock %}
 {% block content %}
 <form method="post" action="{{ url_for('server', action='action') }}">
-	<input type="submit" name="server
+	<input type="submit" name="task" value="start" />
+	<input type="submit" name="task" value="stop" />
 </form>
+<br />
+Status: {% if info.running %}Running{% else %}Stopped{% endif %}<br />
+{% if info.running %}
+Connected users:
+<ul>
+	{% for user in info.connected_users %}
+		<li>{{ user }}</li>
+	{% endfor %}
+</ul>
+{% endif %}
 {% endblock %}

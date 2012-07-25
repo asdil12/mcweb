@@ -16,12 +16,21 @@ app = Flask(__name__)
 
 @app.route('/status')
 @app.route('/server')
+@app.route('/server/<action>', methods=['GET', 'POST'])
 @app.route('/')
-def server():
+def server(action=None):
 	"Server"
 	if 'username' not in session: return goto_login(fname(), fparms())
+	if request.method == 'POST':
+		if action == 'action':
+			task = request.form.get('task')
+			if task == 'start':
+				mcs.start()
+			elif task == 'stop':
+				mcs.stop()
+			return redirect(url_for('server'))
 	info = mcs.info()
-	return render_template('base.html', navigation=get_navi(fname()))
+	return render_template('server.html', navigation=get_navi(fname()), info=info)
 
 @app.route('/properties', methods=['GET', 'POST'])
 def properties():
@@ -70,6 +79,12 @@ if __name__ == '__main__':
 		f.write(u.read())
 		f.close()
 		print "\bDONE"
+	#FIXME Server autostart (set in config)
 	app.debug = True
 	app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 	app.run()
+	print "Shuting down..."
+	try:
+		mcs.stop()
+	except:
+		pass
