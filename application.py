@@ -69,7 +69,7 @@ if __name__ == '__main__':
 		f = open('mcs/minecraft_server.jar', 'w')
 		f.write(u.read())
 		f.close()
-		print "DONE"
+		print "\bDONE"
 	app.debug = True
 	app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 	app.run()
