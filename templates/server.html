@@ -3,7 +3,7 @@
 {% block ctitle %}Server{% endblock %}
 {% block csubtitle %}Server status overview and administration{% endblock %}
 {% block content %}
-<form method="post" action="{{ url_for('server', action='action') }}">
+<form method="post" action="{{ url_for('server', action='power') }}">
 	<input type="submit" name="task" value="start" />
 	<input type="submit" name="task" value="stop" />
 </form>

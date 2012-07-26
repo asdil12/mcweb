@@ -22,7 +22,7 @@ def server(action=None):
 	"Server"
 	if 'username' not in session: return goto_login(fname(), fparms())
 	if request.method == 'POST':
-		if action == 'action':
+		if action == 'power':
 			task = request.form.get('task')
 			if task == 'start':
 				mcs.start()
