@@ -19,6 +19,7 @@ class CommunicationError(Exception):
 
 player_regex = re.compile(r"Connected players: (.*)\n")
 start_regex = re.compile(r"For help, type \"help\" or \"\?\"")
+prepare_regex = re.compile(r"Preparing")
 
 process = None
 
@@ -35,14 +36,27 @@ def start():
 		stdin=subprocess.PIPE
 	)
 	oldsize = os.path.getsize('mcs/server.log') if os.path.isfile('mcs/server.log') else 0
-	for i in xrange(10):
+	lastsize = oldsize
+	i = 10
+	while i > 0:
 		if os.path.isfile('mcs/server.log'):
-			f = open('mcs/server.log')
-			f.seek(oldsize)
-			log = f.read()
-			f.close()
-			if start_regex.search(log):
-				return True
+			size = os.path.getsize('mcs/server.log') if os.path.isfile('mcs/server.log') else 0
+			if size > lastsize:
+				f = open('mcs/server.log')
+				f.seek(oldsize)
+				log = f.read()
+				f.close()
+				if start_regex.search(log):
+					return True
+				else:
+					f = open('mcs/server.log')
+					f.seek(lastsize)
+					log = f.read()
+					f.close()
+					if prepare_regex.search(log):
+						i += 2
+				lastsize = size
+		i -= 1
 		sleep(0.5)
 	raise NotRunning()
 
