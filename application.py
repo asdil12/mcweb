@@ -9,9 +9,11 @@ from flask import request
 from ftools import fname, fparms
 from frontend import *
 import properties as props
-import server as mcs
+import server as mcserver
 import os
 import sys
+import config
+import signal
 app = Flask(__name__)
 
 @app.route('/status')
@@ -44,6 +46,7 @@ def properties():
 	for item in props.tpl:
 		item['value'] = item['default']
 		sproperties.append(item)
+	print foo
 	return render_template('properties.html', navigation=get_navi(fname()), properties=sproperties)
 
 @app.route('/lists/')
@@ -79,12 +82,15 @@ if __name__ == '__main__':
 		f.write(u.read())
 		f.close()
 		print "\bDONE"
-	#FIXME Server autostart (set in config)
+
+	# Server autostart (set in config)
+	# Hack to get right process
+	appname = open("/proc/%d/status" % os.getpid()).readline().split("\t")[1].strip()
+	mcautostart = config.get('server_autostart')
+	if mcautostart and appname != 'application.py':
+		mcs = mcserver.Server()
+		mcs.start()
+
 	app.debug = True
 	app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 	app.run()
-	print "Shuting down..."
-	try:
-		mcs.stop()
-	except:
-		pass

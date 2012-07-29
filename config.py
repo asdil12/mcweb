@@ -6,6 +6,7 @@ filename = 'config.json'
 
 default = {
 		'server_memory': 512,
+		'server_autostart': True,
 }
 
 cache = None
