@@ -101,7 +101,7 @@ class Server:
 		try:
 			if not os.path.isfile('mcs/server.log'):
 				return False
-			if (Server.process.poll() == None):
+			if Server.process.poll() == None:
 				return True
 			else:
 				try:

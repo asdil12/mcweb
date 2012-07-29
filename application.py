@@ -40,13 +40,14 @@ def properties():
 	if 'username' not in session: return goto_login(fname(), fparms())
 
 	if request.method == 'POST':
-		return "<pre>\n%s\n</pre>" % props.get_string(request.form)
+		props.save(request.form)
+		return redirect(url_for('properties'))
 
 	sproperties = []
+	serverprops = props.load()
 	for item in props.tpl:
-		item['value'] = item['default']
+		item['value'] = serverprops.get(item['key'], item['default'])
 		sproperties.append(item)
-	print foo
 	return render_template('properties.html', navigation=get_navi(fname()), properties=sproperties)
 
 @app.route('/lists/')
