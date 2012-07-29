@@ -37,6 +37,17 @@ Released   : 20080425
 			<div id="primarycontainer">
 				<div id="primarycontent">
 					<!-- Primary content start -->
+					{% block messages %}
+						{% with messages = get_flashed_messages(with_categories=true) %}
+							{% if messages %}
+								<div class="flashes">
+									{% for category, message in messages %}
+										<div class="{{ category }}"><strong>{{ category.title() }}: </strong><span class="msg">{{ message }}</span></div>
+									{% endfor %}
+								</div>
+							{% endif %}
+						{% endwith %}
+					{% endblock %}
 					{% block contentbox %}
 					<h3>{% block ctitle %}{% endblock %}</h3>
 					<h4>{% block csubtitle %}{% endblock %}</h4>

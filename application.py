@@ -6,6 +6,7 @@ from flask import url_for
 from flask import session
 from flask import redirect
 from flask import request
+from flask import flash
 from ftools import fname, fparms
 from frontend import *
 import properties as props
@@ -27,9 +28,15 @@ def server(action=None):
 		if action == 'power':
 			task = request.form.get('task')
 			if task == 'start':
-				mcs.start()
+				if mcs.start():
+					flash('Server started.', 'success')
+				else:
+					flash('Server already running.', 'info')
 			elif task == 'stop':
-				mcs.stop()
+				if mcs.stop():
+					flash('Server stopped.', 'success')
+				else:
+					flash('Server not running.', 'info')
 			return redirect(url_for('server'))
 	info = mcs.info()
 	return render_template('server.html', navigation=get_navi(fname()), info=info)
@@ -41,6 +48,7 @@ def properties():
 
 	if request.method == 'POST':
 		props.save(request.form)
+		flash('Properties saved.', 'success')
 		return redirect(url_for('properties'))
 
 	sproperties = []
