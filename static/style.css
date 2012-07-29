@@ -202,6 +202,27 @@ tr.even {
 		background-color: #e9e9e9;
 }
 
+.link {
+	cursor: pointer;
+	text-decoration: underline;
+	background-color: inherit;
+	color: #0000EE;
+}
+
+.halflink {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.link:hover, .halflink:hover
+{
+	text-decoration: none;
+}
+
+.playeract {
+	width: 60px;
+}
+
 /* messages */
 .flashes div {
 	padding: 14px;
@@ -229,3 +250,38 @@ tr.even {
 	border-color: #eed3d7;
 }
 /* messages end */
+
+/* running */
+.running {
+	font-weight: bold;
+	color: #468847;
+	background-color: #D6E9C6;
+}
+
+.stopped {
+	font-weight: bold;
+	color: #b94a48;
+	background-color: #f2dede;
+}
+/* running end */
+
+/* multicolumn */
+.multicolumn {
+	width: 30em;  /* room for 3 columns */
+	width: 100%;  /* room for 3 columns */
+}
+.multicolumn li {
+	float: left;
+	width: 10em;  /* accommodate the widest item */
+}
+/* stop the floating after the list */
+br {
+  clear: left;
+}
+/* multicolumn end */
+
+/* loading */
+.loading {
+	background: url('/static/images/loading.gif') no-repeat center;
+}
+/* loading end */

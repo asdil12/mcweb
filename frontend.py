@@ -7,6 +7,7 @@ def get_navi(active=None):
 	navigation_tabs = [
 		'server',
 		'properties',
+		'users',
 		'login'
 	]
 	if 'username' in session:

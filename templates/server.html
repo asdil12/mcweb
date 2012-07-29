@@ -2,19 +2,123 @@
 {% block titlepath %} :: Server{% endblock %}
 {% block ctitle %}Server{% endblock %}
 {% block csubtitle %}Server status overview and administration{% endblock %}
+{% block head %}
+{{ super() }}
+<script src="{{ url_for('static', filename='minecraft_skin.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+	function select_user(username) {
+		player_model = document.getElementById('player_model');
+		skintd = document.getElementById('skintd');
+
+		draw_model('player_model', 'player_scratch', username, 3, true);
+		document.getElementById('username').innerHTML = username;
+
+		document.getElementById('name_opsa').value = username;
+		document.getElementById('name_opsr').value = username;
+		document.getElementById('name_bana').value = username;
+		document.getElementById('name_banr').value = username;
+		document.getElementById('name_kick').value = username;
+	}
+
+	window.onload = function() {
+		select_user('default');
+	}
+</script>
+{% endblock %}
 {% block content %}
-<form method="post" action="{{ url_for('server', action='power') }}">
-	<input type="submit" name="task" value="start" />
-	<input type="submit" name="task" value="stop" />
+<table style="width: 100%;">
+	<tr>
+		<td style="width: 130px;">Server Power</td>
+		<td class="{% if info.running %}running{% else %}stopped{% endif %}">{% if info.running %}Running{% else %}Stopped{% endif %}</td>
+		<td style="width: 200px;" colspan="2">
+			<form method="post" action="{{ url_for('server', action='power') }}" style="display: inline;">
+				<input type="submit" name="task" value="start" />
+				<input type="submit" name="task" value="stop" />
+				<input type="submit" name="task" value="restart" />
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>Server Memory</td>
+		<td>{{ mem }} MB</td>
+		<form method="post" action="{{ url_for('server', action='memory') }}" style="display: inline;">
+			<td style="width: 100px;">
+					<input type="text" name="mem" value="{{ mem }}" size="5" />&nbsp;MB&nbsp;&nbsp;
+			</td>
+			<td style="width: 60px;">
+					<input type="submit" value="save" />
+			</td>
+		</form>
+	</tr>
+	<tr>
+		<td>Server Autostart</td>
+		<td>{{ 'enabled' if autos else 'disabled' }}</td>
+		<form method="post" action="{{ url_for('server', action='autos') }}" style="display: inline;">
+			<td>
+				<label><input type="checkbox" name="auto" {{ 'checked="checked"' if autos else '' }} />&nbsp;enable</label>
+			</td>
+			<td>
+				<input type="submit" value="save" />
+			</td>
+		</form>
+	</tr>
+	<tr>
+		<td rowspan="2">Connected Users</td>
+		<td rowspan="2" {% if info.connected_users|length > 0 %}style="text-align: left; vertical-align: top;"{% endif %}>
+			{% if info.running %}
+				{% if info.connected_users|length > 0 %}
+					<div style="text-align: center;">{{ info.connected_users|length }} User{{ 's' if info.connected_users|length > 1 else '' }}</div>
+					<br />
+					<ul style="margin: 0 15px;" class="multicolumn">
+						{% for user in info.connected_users %}
+							<li><span class="link" onclick="select_user('{{ user }}');">{{ user }}</span></li>
+						{% endfor %}
+					</ul>
+					<br />
+				{% else %}
+					<i>None</i>
+				{% endif %}
+			{% else %}
+				<i>None</i>
+			{% endif %}
+		</td>
+		<td id="skintd" class="loading">
+			<canvas id="player_scratch" style="display: none;"></canvas>
+			<canvas class="model" id="player_model" width="60" height="134"></canvas>
+		</td>
+		<td colspan="2">
+			<form method="post" action="{{ url_for('users', list='ops') }}">
+				<input type="hidden" name="username" value="default" id="name_opsa" />
+				<input type="hidden" name="task" value="add" />
+				<input type="submit" value="op" class="playeract" />
+			</form>
+			<form method="post" action="{{ url_for('users', list='ops') }}">
+				<input type="hidden" name="username" value="default" id="name_opsr" />
+				<input type="hidden" name="task" value="remove" />
+				<input type="submit" value="deop" class="playeract" />
+			</form>
+			<form method="post" action="{{ url_for('users', list='bans') }}">
+				<input type="hidden" name="username" value="default" id="name_bana" />
+				<input type="hidden" name="task" value="add" />
+				<input type="submit" value="ban" class="playeract" />
+			</form>
+			<form method="post" action="{{ url_for('users', list='bans') }}">
+				<input type="hidden" name="username" value="default" id="name_banr" />
+				<input type="hidden" name="task" value="remove" />
+				<input type="submit" value="pardon" class="playeract" />
+			</form>
+			<form method="post" action="{{ url_for('users', list='kick') }}">
+				<input type="hidden" name="username" value="default" id="name_kick" />
+				<input type="hidden" name="task" value="kick" />
+				<input type="submit" value="kick" class="playeract" />
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" id="username"></td>
+	</tr>
+</table>
+<form id="restartform" method="post" action="{{ url_for('server', action='power') }}" style="display: none;">
+	<input type="hidden" name="task" value="restart" />
 </form>
-<br />
-Status: {% if info.running %}Running{% else %}Stopped{% endif %}<br />
-{% if info.running %}
-Connected users:
-<ul>
-	{% for user in info.connected_users %}
-		<li>{{ user }}</li>
-	{% endfor %}
-</ul>
-{% endif %}
 {% endblock %}

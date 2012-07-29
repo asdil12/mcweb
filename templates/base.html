@@ -12,9 +12,11 @@ Released   : 20080425
 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
+		{% block head %}
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title>{% block title %}MCWeb{% block titlepath %}{% endblock %}{% endblock %}</title>
-	<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" media="screen" />
+		<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" media="screen" />
+		{% endblock %}
 	</head>
 	<body>
 		<div id="header">
@@ -42,7 +44,7 @@ Released   : 20080425
 							{% if messages %}
 								<div class="flashes">
 									{% for category, message in messages %}
-										<div class="{{ category }}"><strong>{{ category.title() }}: </strong><span class="msg">{{ message }}</span></div>
+										<div class="{{ category }}"><strong>{{ category.title() }}: </strong><span class="msg">{{ message|safe }}</span></div>
 									{% endfor %}
 								</div>
 							{% endif %}

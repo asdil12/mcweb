@@ -4,7 +4,7 @@
 {% block csubtitle %}Properties defined in the server.properties file{% endblock %}
 {% block content %}
 <form method="post" action="{{ url_for('properties') }}">
-	<table>
+	<table style="width: 100%;">
 		{% for prop in properties -%}
 			<tr class="{{ loop.cycle('odd', 'even') }}">
 				<td class="propkey" title="default: {% if prop.default == '' %}unset{% else %}{{ prop.default }}{% endif %}">{{ prop.key }}</td>
@@ -30,5 +30,8 @@
 			</td>
 		</tr>
 	</table>
+</form>
+<form id="restartform" method="post" action="{{ url_for('server', action='power') }}" style="display: none;">
+	<input type="hidden" name="task" value="restart" />
 </form>
 {% endblock %}
