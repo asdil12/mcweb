@@ -4,6 +4,7 @@ import os
 import re
 import subprocess
 import config
+import zipfile
 from time import sleep
 
 # java -Xms1536M -Xmx1536M -jar minecraft_server.jar nogui 
@@ -27,9 +28,10 @@ def check_pid(pid):
 		return True
 
 class Server:
-	player_regex = re.compile(r"Connected players: (.*)\n")
+	player_regex = re.compile(r"There are \d+/\d+ players online:\n.*\[INFO\] (.*)\n")
 	start_regex = re.compile(r"For help, type \"help\" or \"\?\"")
 	prepare_regex = re.compile(r"Preparing")
+	version_regex = re.compile("minecraft server version (\d+\.\d+\.\d+)")
 	process = None
 
 	def __init__(self):
@@ -138,7 +140,11 @@ class Server:
 			raise NotRunning()
 
 	def connected_users(self):
+		#old:
 		#2012-07-25 16:17:05 [INFO] Connected players: user1, test
+		#new:
+		#2012-08-25 16:51:54 [INFO] There are 2/20 players online:
+		#2012-08-25 16:51:54 [INFO] user1, test
 		mclog = self.cmd_out('list')
 		try:
 			players = Server.player_regex.search(mclog).group(1)
@@ -147,9 +153,19 @@ class Server:
 		except AttributeError:
 			raise CommunicationError()
 
+	def get_version(self):
+		try:
+			z = zipfile.ZipFile('mcs/minecraft_server.jar', 'r')
+			ft = z.read('ft.class')
+			version = Server.version_regex.search(ft).group(1)
+			return version
+		except IOError:
+			return 'NONE'
+
 	def info(self):
 		info = {}
 		info['running'] = self.running()
+		info['version'] = self.get_version()
 		if self.running():
 			info['connected_users'] = self.connected_users()
 		return info

@@ -39,6 +39,15 @@
 		</td>
 	</tr>
 	<tr>
+		<td>Server Version</td>
+		<td>{{ '<i>'|safe if info.version == 'NONE' }}{{ info.version }}{{ '</i>'|safe if info.version == 'NONE' }}</td>
+		<td style="width: 200px;" colspan="2">
+			<form method="post" action="{{ url_for('server', action='update') }}" style="display: inline;">
+				<input type="submit" value="update" />
+			</form>
+		</td>
+	</tr>
+	<tr>
 		<td>Server Memory</td>
 		<td>{{ mem }} MB</td>
 		<form method="post" action="{{ url_for('server', action='memory') }}" style="display: inline;">

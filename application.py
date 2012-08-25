@@ -56,6 +56,14 @@ def server(action=None):
 			autostart = (request.form.get('auto') == 'on')
 			flash('Server autostart %s.' % ('enabled' if autostart else 'disabled'), 'success')
 			config.update(server_autostart=bool(autostart))
+		elif action == 'update':
+			old_version = mcs.get_version()
+			update_server_binary()
+			new_version = mcs.get_version()
+			if old_version != new_version:
+				flash('Server updated. <span class="halflink" onclick="document.getElementById(\'restartform\').submit();">Restart</span> the server to apply your changes.', 'success')
+			else:
+				flash('Server version unchanged. You already have the current version.', 'info')
 		return redirect(url_for('server'))
 	info = mcs.info()
 	mem = config.get('server_memory')
@@ -117,14 +125,17 @@ def logout():
 	session.pop('username', None)
 	return redirect(url_for('server'))
 
+def update_server_binary():
+	u = urllib2.urlopen('http://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar')
+	f = open('mcs/minecraft_server.jar', 'w')
+	f.write(u.read())
+	f.close()
+
 if __name__ == '__main__':
 	if not os.path.isfile('mcs/minecraft_server.jar'):
 		print "Downloading minecraft_server.jar ... ",
 		sys.stdout.flush()
-		u = urllib2.urlopen('http://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar')
-		f = open('mcs/minecraft_server.jar', 'w')
-		f.write(u.read())
-		f.close()
+		update_server_binary()
 		print "\bDONE"
 
 	# Server autostart (set in config)
