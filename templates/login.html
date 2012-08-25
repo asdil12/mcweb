@@ -1,5 +1,21 @@
 {% extends "base.html" %}
 {% block titlepath %} :: Login{% endblock %}
+{% block ctitle %}Login{% endblock %}
+{% block csubtitle %}Admin Login{% endblock %}
 {% block content %}
-<form method="post"><input type="submit" /></form>
+<form method="post" action="{{ url_for('login') }}">
+	<table>
+		<tr>
+			<td style="width: 70px;">Username</td>
+			<td style="width: 140px;"><input type="text" name="username" /></td>
+		</tr>
+		<tr>
+			<td>Password</td>
+			<td><input type="password" name="password" /></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="submit" value="Login" /></td>
+		</tr>
+	</table>
+</form>
 {% endblock %}

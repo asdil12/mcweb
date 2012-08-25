@@ -1,6 +1,7 @@
 #!/usr/bin/python2
 
 from flask import Flask
+from flask import Markup
 from flask import render_template
 from flask import make_response
 from flask import url_for
@@ -12,6 +13,7 @@ from ftools import fname, fparms
 from frontend import *
 import properties as props
 import server as mcserver
+import admin as webadm
 import os
 import sys
 import config
@@ -108,15 +110,54 @@ def skins(username):
 	resp.headers['Content-type'] = 'image/png'
 	return resp
 
+@app.route('/admins', methods=['GET', 'POST'])
+def admins():
+	"Admins"
+	if request.method == 'POST':
+		return redirect(url_for('admins_edit', name=request.form.get('newname')))
+	admin_list = webadm.list()
+	return render_template('admins.html', navigation=get_navi(fname()), admin_list=admin_list)
+
+@app.route('/admins/')
+@app.route('/admins/<name>', methods=['GET', 'POST'])
+def admins_edit(name=None):
+	action = 'delete' if request.args.get('action', request.form.get('action')) == 'delete' else 'edit'
+	if 'username' not in session: return goto_login(fname(), fparms())
+	if not name:
+		return redirect(url_for('admins'))
+	if request.method == 'POST':
+		if action == 'edit':
+			password = request.form.get('new_password')
+			if password:
+				webadm.set(name, password)
+				flash('User <i>%s</i> successfully updated.' % Markup.escape(name), 'success')
+			else:
+				flash('Password must not be empty.', 'error')
+				return redirect(url_for('admins_edit', name=name))
+		elif action == 'delete':
+			if len(webadm.list()) == 1:
+				flash('You can\'t delete the last user.', 'error')
+				return redirect(url_for('admins'))
+			webadm.remove(name)
+			flash('User <i>%s</i> successfully deleted.' % Markup.escape(name), 'success')
+		return redirect(url_for('admins'))
+	return render_template('admins_edit.html', navigation=get_navi('admins'), admin=name, action=action)
+
 # Login / Logout
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	"Login"
 	if request.method == 'POST':
-		funcname = session.pop('fname', 'server')
-		args = session.pop('args', {})
-		session['username'] = 'tux'
-		return redirect(url_for(funcname, **args))
+		username = request.form.get('username')
+		password = request.form.get('password')
+		if webadm.auth(username, password):
+			funcname = session.pop('fname', 'server')
+			args = session.pop('args', {})
+			session['username'] = username
+			flash('Login successfull.', 'success')
+			return redirect(url_for(funcname, **args))
+		else:
+			flash('Login failed.', 'error')
 	return render_template('login.html', navigation=get_navi(fname()))
 
 @app.route('/logout')

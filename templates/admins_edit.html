@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block titlepath %} :: Edit Admin{% endblock %}
+{% block ctitle %}Edit Admin{% endblock %}
+{% block csubtitle %}{{ 'Edit' if action == 'edit' else 'Delete' }} account '<i>{{admin}}</i>'{% endblock %}
+{% block content %}
+{% if action == 'edit' %}
+<form method="post" action="{{ url_for('admins_edit', name=admin) }}">
+	<table>
+		<tr>
+			<td style="width: 70px;">Username</td>
+			<td style="width: 140px;">{{ admin }}</td>
+		</tr>
+		<tr>
+			<td>Password</td>
+			<td><input type="password" id="pass" name="new_password" value="" autocomplete="off" /></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="action" value="{{ action }}" />
+				<input type="submit" value="Save" />
+			</td>
+		</tr>
+	</table>
+</form>
+<script type="text/javascript">
+	window.onload = function() {
+		document.getElementById('pass').focus();
+	}
+</script>
+{% elif action == 'delete' %}
+<form method="post" action="{{ url_for('admins_edit', name=admin) }}">
+	<table>
+		<tr>
+			<td colspan="2">
+				Really delete this account?
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 70px;">Username</td>
+			<td style="width: 140px;">{{ admin }}</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="action" value="{{ action }}" />
+				<input type="submit" value="Yes" />
+			</td>
+		</tr>
+	</table>
+</form>
+{% endif %}
+{% endblock %}

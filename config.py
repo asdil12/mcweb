@@ -7,6 +7,7 @@ filename = 'config.json'
 default = {
 		'server_memory': 512,
 		'server_autostart': True,
+		'admin_accounts': {'admin': '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'},
 }
 
 cache = None

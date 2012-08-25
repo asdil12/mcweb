@@ -8,6 +8,7 @@ def get_navi(active=None):
 		'server',
 		'properties',
 		'users',
+		'admins',
 		'login'
 	]
 	if 'username' in session:
