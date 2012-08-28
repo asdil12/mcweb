@@ -14,6 +14,7 @@ from frontend import *
 import properties as props
 import server as mcserver
 import admin as webadm
+from lists import Lists as UserLists
 import os
 import sys
 import config
@@ -66,6 +67,13 @@ def server(action=None):
 				flash('Server updated. <span class="halflink" onclick="document.getElementById(\'restartform\').submit();">Restart</span> the server to apply your changes.', 'success')
 			else:
 				flash('Server version unchanged. You already have the current version.', 'info')
+		elif action == 'announce':
+			message = request.form.get('message').replace("\n", '')
+			try:
+				mcs.cmd('say %s' % message)
+				flash('Announcement sent.', 'success')
+			except mcserver.NotRunning:
+				flash('Announcement impossible when server is not running.', 'error')
 		return redirect(url_for('server'))
 	info = mcs.info()
 	mem = config.get('server_memory')
@@ -90,11 +98,42 @@ def properties():
 	return render_template('properties.html', navigation=get_navi(fname()), properties=sproperties)
 
 @app.route('/users')
-@app.route('/users/<list>')
+@app.route('/users/<name>')
 def users(name=None):
 	"Users"
 	if 'username' not in session: return goto_login(fname(), fparms())
 	return render_template('base.html', navigation=get_navi(fname()))
+
+@app.route('/lists')
+def lists():
+	"Lists"
+	if 'username' not in session: return goto_login(fname(), fparms())
+	return render_template('lists.html', navigation=get_navi(fname()), userlists=userlists.getall())
+
+@app.route('/lists/')
+@app.route('/lists/<name>', methods=['GET', 'POST'])
+def lists_edit(name=None):
+	if 'username' not in session: return goto_login(fname(), fparms())
+	action = 'delete' if request.args.get('action', request.form.get('action')) == 'delete' else 'add'
+	item = request.args.get('item', request.form.get('item'))
+	if not name or not action or not item:
+		return redirect(url_for('lists'))
+	listname = getattr(userlists, name).printedname
+	if request.method == 'POST':
+		if name == 'whitelist':
+			restartstring = '<span class="halflink" onclick="document.getElementById(\'restartform\').submit();">Restart</span> the server to apply your changes.'
+		if action == 'add':
+			if getattr(userlists, name).add(item):
+				flash('<i>%s</i> added to %s. %s' % (Markup.escape(item), listname, restartstring), 'success')
+			else:
+				flash('<i>%s</i> is already in %s.' % (Markup.escape(item), listname), 'info')
+		elif action == 'delete':
+			if getattr(userlists, name).remove(item):
+				flash('<i>%s</i> deleted from %s. %s' % (Markup.escape(item), listname, restartstring), 'success')
+			else:
+				flash('<i>%s</i> is not in %s.' % (Markup.escape(item), listname), 'info')
+		return redirect(url_for('lists'))
+	return render_template('lists_delete.html', navigation=get_navi('lists'), name=name, action=action, item=item, listname=listname)
 
 # Skin proxy
 @app.route('/skins/<username>.png')
@@ -130,7 +169,7 @@ def admins_edit(name=None):
 			password = request.form.get('new_password')
 			if password:
 				webadm.set(name, password)
-				flash('User <i>%s</i> successfully updated.' % Markup.escape(name), 'success')
+				flash('User <i>%s</i> updated.' % Markup.escape(name), 'success')
 			else:
 				flash('Password must not be empty.', 'error')
 				return redirect(url_for('admins_edit', name=name))
@@ -139,7 +178,7 @@ def admins_edit(name=None):
 				flash('You can\'t delete the last user.', 'error')
 				return redirect(url_for('admins'))
 			webadm.remove(name)
-			flash('User <i>%s</i> successfully deleted.' % Markup.escape(name), 'success')
+			flash('User <i>%s</i> deleted.' % Markup.escape(name), 'success')
 		return redirect(url_for('admins'))
 	return render_template('admins_edit.html', navigation=get_navi('admins'), admin=name, action=action)
 
@@ -187,6 +226,7 @@ if __name__ == '__main__':
 		mcs = mcserver.Server()
 		if mcautostart:
 			mcs.start()
+		userlists = UserLists(mcs)
 
 	app.debug = True
 	app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'

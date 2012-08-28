@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titlepath %} :: Lists{% endblock %}
+{% block ctitle %}Lists{% endblock %}
+{% block csubtitle %}Game Operators{% endblock %}
+{% block content %}
+<table>
+	{% for name in userlists.operators -%}
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<td style="width: 200px;">{{ name }}</td>
+			<td style="width: 45px;"><a href="{{ url_for('lists_edit', name='operators', action='delete', item=name) }}">Delete</a></td>
+		</tr>
+	{% endfor %}
+	<form method="post" action="{{ url_for('lists_edit', name='operators') }}">
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<td style="width: 200px;"><input type="text" name="item" /></td>
+			<td colspan="2">
+				<input type="hidden" name="action" value="add" />
+				<input type="submit" value="Add" />
+			</td>
+		</tr>
+	</form>
+</table>
+<p />
+<h4>White-List</h4>
+<table>
+	{% for name in userlists.whitelist -%}
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<td style="width: 200px;">{{ name }}</td>
+			<td style="width: 45px;"><a href="{{ url_for('lists_edit', name='whitelist', action='delete', item=name) }}">Delete</a></td>
+		</tr>
+	{% endfor %}
+	<form method="post" action="{{ url_for('lists_edit', name='whitelist') }}">
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<td style="width: 200px;"><input type="text" name="item" /></td>
+			<td colspan="2">
+				<input type="hidden" name="action" value="add" />
+				<input type="submit" value="Add" />
+			</td>
+		</tr>
+	</form>
+</table>
+<form id="restartform" method="post" action="{{ url_for('server', action='power') }}" style="display: none;">
+	<input type="hidden" name="task" value="restart" />
+</form>
+{% endblock %}

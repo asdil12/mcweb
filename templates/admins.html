@@ -11,12 +11,13 @@
 			<td style="width: 45px;"><a href="{{ url_for('admins_edit', name=admin, action='delete') }}">Delete</a></td>
 		</tr>
 	{% endfor %}
+	<form method="post" action="{{ url_for('admins') }}">
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<td style="width: 200px;"><input type="text" name="newname" /></td>
+			<td colspan="2">
+				<input type="submit" value="Create" />
+			</td>
+		</tr>
+	</form>
 </table>
-<p />
-<form method="post" action="{{ url_for('admins') }}">
-	<h4>Add admin account</h4>
-	Username:
-	<input type="text" name="newname" />
-	<input type="submit" value="Create" /></td>
-</form>
 {% endblock %}

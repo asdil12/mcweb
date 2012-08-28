@@ -126,6 +126,15 @@
 	<tr>
 		<td colspan="2" id="username"></td>
 	</tr>
+	<tr>
+		<td>Server Announcement</td>
+		<form method="post" action="{{ url_for('server', action='announce') }}" style="display: inline;">
+			<td><input type="text" name="message" style="width: 100%; border: none;" /></td>
+			<td colspan="2">
+					<input type="submit" value="send" />
+			</td>
+		</form>
+	</tr>
 </table>
 <form id="restartform" method="post" action="{{ url_for('server', action='power') }}" style="display: none;">
 	<input type="hidden" name="task" value="restart" />

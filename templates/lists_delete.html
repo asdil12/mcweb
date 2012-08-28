@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titlepath %} :: Edit List{% endblock %}
+{% block ctitle %}Edit List{% endblock %}
+{% block csubtitle %}Delete <i>{{ item }}</i> from {{ listname }}{% endblock %}
+{% block content %}
+<form method="post" action="{{ url_for('lists_edit', name=name) }}">
+	<table>
+		<tr>
+			<td colspan="2">
+				Really delete from list?
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 45px;">Name</td>
+			<td style="width: 140px;">{{ item }}</td>
+		</tr>
+		<tr>
+			<td>List</td>
+			<td>{{ listname }}</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="action" value="{{ action }}" />
+				<input type="hidden" name="item" value="{{ item }}" />
+				<input type="submit" value="Yes" />
+			</td>
+		</tr>
+	</table>
+</form>
+{% endblock %}
