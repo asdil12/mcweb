@@ -122,6 +122,8 @@ def lists_edit(name=None):
 	if request.method == 'POST':
 		if name == 'whitelist':
 			restartstring = '<span class="halflink" onclick="document.getElementById(\'restartform\').submit();">Restart</span> the server to apply your changes.'
+		else:
+			restartstring = ''
 		if action == 'add':
 			if getattr(userlists, name).add(item):
 				flash('<i>%s</i> added to %s. %s' % (Markup.escape(item), listname, restartstring), 'success')
