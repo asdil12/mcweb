@@ -9,6 +9,7 @@ from flask import session
 from flask import redirect
 from flask import request
 from flask import flash
+from flask import jsonify
 from ftools import fname, fparms
 from frontend import *
 import properties as props
@@ -103,6 +104,11 @@ def users(name=None):
 	"Users"
 	if 'username' not in session: return goto_login(fname(), fparms())
 	return render_template('base.html', navigation=get_navi(fname()))
+
+@app.route('/_users/<name>')
+def users_json(name):
+	if 'username' not in session: return goto_login(fname(), fparms())
+	return jsonify(**userlists.get_user_info(name))
 
 @app.route('/lists')
 def lists():

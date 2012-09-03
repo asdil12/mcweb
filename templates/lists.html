@@ -42,4 +42,42 @@
 <form id="restartform" method="post" action="{{ url_for('server', action='power') }}" style="display: none;">
 	<input type="hidden" name="task" value="restart" />
 </form>
+<p />
+<h4>Banned Users</h4>
+<table>
+	{% for name in userlists.banned -%}
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<td style="width: 200px;">{{ name }}</td>
+			<td style="width: 45px;"><a href="{{ url_for('lists_edit', name='banned', action='delete', item=name) }}">Delete</a></td>
+		</tr>
+	{% endfor %}
+	<form method="post" action="{{ url_for('lists_edit', name='banned') }}">
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<td style="width: 200px;"><input type="text" name="item" /></td>
+			<td colspan="2">
+				<input type="hidden" name="action" value="add" />
+				<input type="submit" value="Add" />
+			</td>
+		</tr>
+	</form>
+</table>
+<p />
+<h4>Banned IPs</h4>
+<table>
+	{% for name in userlists.banned_ips -%}
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<td style="width: 200px;">{{ name }}</td>
+			<td style="width: 45px;"><a href="{{ url_for('lists_edit', name='banned_ips', action='delete', item=name) }}">Delete</a></td>
+		</tr>
+	{% endfor %}
+	<form method="post" action="{{ url_for('lists_edit', name='banned_ips') }}">
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<td style="width: 200px;"><input type="text" name="item" /></td>
+			<td colspan="2">
+				<input type="hidden" name="action" value="add" />
+				<input type="submit" value="Add" />
+			</td>
+		</tr>
+	</form>
+</table>
 {% endblock %}
