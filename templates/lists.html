@@ -11,7 +11,7 @@
 		</tr>
 	{% endfor %}
 	<form method="post" action="{{ url_for('lists_edit', name='operators') }}">
-		<tr class="{{ loop.cycle('odd', 'even') }}">
+		<tr class="">
 			<td style="width: 200px;"><input type="text" name="item" /></td>
 			<td colspan="2">
 				<input type="hidden" name="action" value="add" />
@@ -30,7 +30,7 @@
 		</tr>
 	{% endfor %}
 	<form method="post" action="{{ url_for('lists_edit', name='whitelist') }}">
-		<tr class="{{ loop.cycle('odd', 'even') }}">
+		<tr class="">
 			<td style="width: 200px;"><input type="text" name="item" /></td>
 			<td colspan="2">
 				<input type="hidden" name="action" value="add" />
@@ -52,7 +52,7 @@
 		</tr>
 	{% endfor %}
 	<form method="post" action="{{ url_for('lists_edit', name='banned') }}">
-		<tr class="{{ loop.cycle('odd', 'even') }}">
+		<tr class="">
 			<td style="width: 200px;"><input type="text" name="item" /></td>
 			<td colspan="2">
 				<input type="hidden" name="action" value="add" />
@@ -71,7 +71,7 @@
 		</tr>
 	{% endfor %}
 	<form method="post" action="{{ url_for('lists_edit', name='banned_ips') }}">
-		<tr class="{{ loop.cycle('odd', 'even') }}">
+		<tr class="">
 			<td style="width: 200px;"><input type="text" name="item" /></td>
 			<td colspan="2">
 				<input type="hidden" name="action" value="add" />

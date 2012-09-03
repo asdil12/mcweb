@@ -22,6 +22,7 @@ class BaseList:
 			return []
 	
 	def add(self, name):
+		name = name.lower()
 		if name in self.get():
 			return False
 		else:
@@ -33,6 +34,7 @@ class BaseList:
 			return True
 
 	def remove(self, name):
+		name = name.lower()
 		if name not in self.get():
 			return False
 		else:
@@ -98,6 +100,7 @@ class Lists:
 		}
 
 	def get_user_info(self, username):
+		username = username.lower()
 		#if self._server.running():
 		#	online = (username in self._server.connected_users())
 		#else:

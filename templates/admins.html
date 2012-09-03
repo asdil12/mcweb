@@ -12,7 +12,7 @@
 		</tr>
 	{% endfor %}
 	<form method="post" action="{{ url_for('admins') }}">
-		<tr class="{{ loop.cycle('odd', 'even') }}">
+		<tr class="">
 			<td style="width: 200px;"><input type="text" name="newname" /></td>
 			<td colspan="2">
 				<input type="submit" value="Create" />
