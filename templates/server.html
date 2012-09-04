@@ -17,15 +17,16 @@
 		skintd = document.getElementById('skintd');
 
 		draw_model('player_model', 'player_scratch', username, 3, true);
-		document.getElementById('username').innerHTML = username;
-
-		document.getElementById('name_opsa').value = username;
-		document.getElementById('name_opsr').value = username;
-		document.getElementById('name_bana').value = username;
-		document.getElementById('name_banr').value = username;
-		document.getElementById('name_kick').value = username;
 
 		if(username != 'default') {
+			document.getElementById('username').innerHTML = username;
+
+			document.getElementById('name_opsa').value = username;
+			document.getElementById('name_opsr').value = username;
+			document.getElementById('name_bana').value = username;
+			document.getElementById('name_banr').value = username;
+			document.getElementById('name_kick').value = username;
+
 			new Ajax.Request('{{ url_for('users_json', name='') }}' + username, {
 				method: 'get',
 				onFailure: function(){ alert('Something went wrong...') },
@@ -46,6 +47,9 @@
 					document.getElementById('subm_kick').disabled = false;
 				}
 			});
+		}
+		else {
+			document.getElementById('username').innerHTML = '<i>None</i>';
 		}
 	}
 
