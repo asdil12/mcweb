@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block titlepath %} :: Users{% endblock %}
+{% block ctitle %}Users{% endblock %}
+{% block csubtitle %}User <i>{{ name }}</i>{% endblock %}
+{% block head %}
+{{ super() }}
+<script src="{{ url_for('static', filename='minecraft_skin.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+	function select_user(username) {
+		skintd = document.getElementById('skintd');
+		skintd.classList.add('loading')
+		draw_model('player_model', 'player_scratch', username, 3, false);
+		draw_model_back('player_model_back', 'player_scratch', username, 3, false);
+		skintd.classList.remove('loading')
+	}
+
+	function select_tp_target(target) {
+		document.getElementById('usertarget').style.display = 'none';
+		document.getElementById('positiontarget').style.display = 'none';
+		if(target == 'user') {
+			document.getElementById('usertarget').style.display = 'inline';
+		}
+		else {
+			document.getElementById('positiontarget').style.display = 'inline';
+		}
+	}
+
+	window.onload = function() {
+		select_user('{{ name }}');
+	}
+</script>
+{% endblock %}
+{% block content %}
+<table style="width: 100%;">
+	<tr>
+		<td>User name</td>
+		<td>{{ name }}</td>
+		<td><a href="{{ url_for('skins', username=name) }}">Skin</a></td>
+		<td style="width: 120px;" colspan="2" rowspan="5" id="skintd" class="loading">
+			<canvas id="player_scratch" style="display: none;"></canvas>
+			<canvas class="model" id="player_model" width="60" height="134" style="margin-right: 10px;"></canvas>
+			<canvas class="model" id="player_model_back" width="60" height="134"></canvas>
+		</td>
+	</tr>
+	<tr>
+		<td style="height: 21px; width: 130px;">User status</td>
+		<td class="{% if info.online %}running{% else %}stopped{% endif %}">{% if info.online %}Online{% else %}Offline{% endif %}</td>
+		<td style="width: 60px;"><input type="submit" name="action" value="kick" /></td>
+	</tr>
+	<tr>
+		<td>Game Operator</td>
+		<td>{{ 'Yes' if info.operators else 'No' }}</td>
+		<td><input type="submit" name="action" value="kick" /></td>
+	</tr>
+	<tr>
+		<td>Whitelisted</td>
+		<td>{{ 'Yes' if info.whitelist else 'No' }}</td>
+		<td><input type="submit" name="action" value="kick" /></td>
+	</tr>
+	<tr>
+		<td>Banned</td>
+		<td>{{ 'Yes' if info.banned else 'No' }}</td>
+		<td><input type="submit" name="action" value="kick" /></td>
+	</tr>
+	<!-- workaround table rendering bug -->
+	<tr class="fixrow">
+		<td></td>
+		<td></td>
+		<td></td>
+		<td style="width: 100px;"></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>Send Message</td>
+		<td><input type="text" name="message" style="width: 100%; border: none;" /></td>
+		<td colspan="3"><input type="submit" value="send" /></td>
+	</tr>
+	<tr>
+		<td>Teleport</td>
+		<td>
+			<span id="usertarget">user</span>
+			<span id="positiontarget" style="display: none;">pos</span>
+		</td>
+		<td colspan="2">
+			<select name="target" onchange="select_tp_target(this.value);">
+				<option value="user" selected="selected">to other User</option>
+				<option value="position">to Coordinates</option>
+			</select>
+		</td>
+		<td style="width: 60px;"><input type="submit" value="TP" /></td>
+	</tr>
+	<tr>
+		<td>XP's</td>
+		<td></td>
+		<td colspan="2"><input type="text" name="amount" /></td>
+		<td><input type="submit" value="give" /></td>
+	</tr>
+	<tr>
+		<td rowspan="2">Give Items</td>
+		<td rowspan="2">items</td>
+		<td colspan="2">current item</td>
+		<td><input type="text" name="item" title="Decimal item id" style="width: 100%" /></td>
+	</tr>
+	<tr>
+		<td colspan="2"><input type="text" name="amount" /></td>
+		<td><input type="submit" value="give" /></td>
+	</tr>
+</table>
+{% endblock %}

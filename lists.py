@@ -99,15 +99,16 @@ class Lists:
 			"banned_ips": self.banned_ips.get(),
 		}
 
-	def get_user_info(self, username):
+	def get_user_info(self, username, check_online=False):
 		username = username.lower()
-		#if self._server.running():
-		#	online = (username in self._server.connected_users())
-		#else:
-		#	online = False
-		return {
+		ret = {
 			"operators": (username in self.operators.get()),
 			"whitelist": (username in self.whitelist.get()),
 			"banned": (username in self.banned.get()),
-		#	"online": online,
 		}
+		if check_online:
+			if self._server.running():
+				ret['online'] = (username in self._server.connected_users())
+			else:
+				ret['online'] = False
+		return ret

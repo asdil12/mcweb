@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block titlepath %} :: Users{% endblock %}
+{% block ctitle %}Users{% endblock %}
+{% block csubtitle %}User actions and administration{% endblock %}
+{% block head %}
+{{ super() }}
+<script src="{{ url_for('static', filename='minecraft_skin.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+	function select_user(username) {
+		draw_model('player_model', 'player_scratch', username, 3, false);
+	}
+
+	window.onload = function() {
+		select_user('default');
+	}
+</script>
+{% endblock %}
+{% block content %}
+<table style="width: 100%;">
+	<tr>
+		<td style="height: 21px;">Select by username</td>
+		<td>
+			<form method="post" action="{{ url_for('users') }}">
+				<input type="text" name="name" onkeyup="select_user(this.value);" />
+				<input type="submit" value="OK" />
+			</form>
+		</td>
+		<td style="width: 120px;" rowspan="2" id="skintd" class="loading">
+			<canvas id="player_scratch" style="display: none;"></canvas>
+			<canvas class="model" id="player_model" width="60" height="134"></canvas>
+		</td>
+	</tr>
+	<tr>
+		<td style="width: 130px;">Connected Users</td>
+		<td {% if info.connected_users|length > 0 %}style="text-align: left; vertical-align: top;"{% endif %}>
+			{% if info.running %}
+				{% if info.connected_users|length > 0 %}
+					<div style="text-align: center;">{{ info.connected_users|length }} User{{ 's' if info.connected_users|length > 1 else '' }}</div>
+					<br />
+					<ul style="margin: 0 15px;" class="multicolumn">
+						{% for user in info.connected_users %}
+							<li><a href="{{ url_for('user_details', name=user) }}" onmouseover="select_user('{{ user }}');">{{ user }}</a></li>
+						{% endfor %}
+					</ul>
+					<br />
+				{% else %}
+					<i>None</i>
+				{% endif %}
+			{% else %}
+				<i>None</i>
+			{% endif %}
+		</td>
+	</tr>
+</table>
+{% endblock %}

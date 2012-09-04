@@ -98,12 +98,19 @@ def properties():
 		sproperties.append(item)
 	return render_template('properties.html', navigation=get_navi(fname()), properties=sproperties)
 
-@app.route('/users')
-@app.route('/users/<name>')
-def users(name=None):
+@app.route('/users', methods=['GET', 'POST'])
+def users():
 	"Users"
 	if 'username' not in session: return goto_login(fname(), fparms())
-	return render_template('base.html', navigation=get_navi(fname()))
+	if request.method == 'POST':
+		return redirect(url_for('user_details', name=request.form.get('name')))
+	info = mcs.info()
+	return render_template('users.html', navigation=get_navi(fname()), info=info)
+
+@app.route('/users/<name>')
+def user_details(name):
+	user_info = userlists.get_user_info(name, check_online=True)
+	return render_template('user_details.html', navigation=get_navi('users'), info=user_info, name=name)
 
 @app.route('/_users/<name>')
 def users_json(name):
