@@ -10,7 +10,7 @@
 		skintd = document.getElementById('skintd');
 		skintd.classList.add('loading')
 		draw_model('player_model', 'player_scratch', username, 3, false);
-		draw_model_back('player_model_back', 'player_scratch', username, 3, false);
+		draw_model_back('player_model_back', 'player_scratch_back', username, 3, false);
 		skintd.classList.remove('loading')
 	}
 
@@ -26,6 +26,7 @@
 	}
 
 	window.onload = function() {
+		document.getElementById('tpsel').value = 'user';
 		select_user('{{ name }}');
 	}
 </script>
@@ -38,6 +39,7 @@
 		<td><a href="{{ url_for('skins', username=name) }}">Skin</a></td>
 		<td style="width: 120px;" colspan="2" rowspan="5" id="skintd" class="loading">
 			<canvas id="player_scratch" style="display: none;"></canvas>
+			<canvas id="player_scratch_back" style="display: none;"></canvas>
 			<canvas class="model" id="player_model" width="60" height="134" style="margin-right: 10px;"></canvas>
 			<canvas class="model" id="player_model_back" width="60" height="134"></canvas>
 		</td>
@@ -45,22 +47,76 @@
 	<tr>
 		<td style="height: 21px; width: 130px;">User status</td>
 		<td class="{% if info.online %}running{% else %}stopped{% endif %}">{% if info.online %}Online{% else %}Offline{% endif %}</td>
-		<td style="width: 60px;"><input type="submit" name="action" value="kick" /></td>
+		<td style="width: 60px;">
+			<form method="post" action="{{ url_for('user_action') }}">
+				<input type="hidden" name="username" value="{{ name }}" />
+				<input type="hidden" name="action" value="kick" />
+				<input type="submit" value="kick" id="subm_kick" class="playeract" title="Kick the user from the server" {{ '' if info.online else 'disabled="disabled"' }} />
+			</form>
+		</td>
 	</tr>
 	<tr>
 		<td>Game Operator</td>
 		<td>{{ 'Yes' if info.operators else 'No' }}</td>
-		<td><input type="submit" name="action" value="kick" /></td>
+		<td>
+			{% if info.operators %}
+			<form method="post" action="{{ url_for('lists_edit', name='operators') }}">
+				<input type="hidden" name="item" value="{{ name }}" />
+				<input type="hidden" name="action" value="delete" />
+				<input type="hidden" name="returnpage" value="user_details" />
+				<input type="submit" value="deop" class="playeract" title="Remove operator status" />
+			</form>
+			{% else %}
+			<form method="post" action="{{ url_for('lists_edit', name='operators') }}">
+				<input type="hidden" name="item" value="{{ name }}" />
+				<input type="hidden" name="action" value="add" />
+				<input type="hidden" name="returnpage" value="user_details" />
+				<input type="submit" value="op" class="playeract" title="Give the user operator status" />
+			</form>
+			{% endif %}
+		</td>
 	</tr>
 	<tr>
 		<td>Whitelisted</td>
 		<td>{{ 'Yes' if info.whitelist else 'No' }}</td>
-		<td><input type="submit" name="action" value="kick" /></td>
+		<td>
+			{% if info.whitelist %}
+			<form method="post" action="{{ url_for('lists_edit', name='whitelist') }}">
+				<input type="hidden" name="item" value="{{ name }}" />
+				<input type="hidden" name="action" value="delete" />
+				<input type="hidden" name="returnpage" value="user_details" />
+				<input type="submit" value="dewl" class="playeract" title="Remove from whitelist" />
+			</form>
+			{% else %}
+			<form method="post" action="{{ url_for('lists_edit', name='whitelist') }}">
+				<input type="hidden" name="item" value="{{ name }}" />
+				<input type="hidden" name="action" value="add" />
+				<input type="hidden" name="returnpage" value="user_details" />
+				<input type="submit" value="wl" class="playeract" title="Add to whitelist" />
+			</form>
+			{% endif %}
+		</td>
 	</tr>
 	<tr>
 		<td>Banned</td>
 		<td>{{ 'Yes' if info.banned else 'No' }}</td>
-		<td><input type="submit" name="action" value="kick" /></td>
+		<td>
+			{% if info.banned %}
+			<form method="post" action="{{ url_for('lists_edit', name='banned') }}">
+				<input type="hidden" name="item" value="{{ name }}" />
+				<input type="hidden" name="action" value="delete" />
+				<input type="hidden" name="returnpage" value="user_details" />
+				<input type="submit" value="pardon" class="playeract" title="Remove the ban" />
+			</form>
+			{% else %}
+			<form method="post" action="{{ url_for('lists_edit', name='banned') }}">
+				<input type="hidden" name="item" value="{{ name }}" />
+				<input type="hidden" name="action" value="add" />
+				<input type="hidden" name="returnpage" value="user_details" />
+				<input type="submit" value="ban" class="playeract" title="Ban the user" />
+			</form>
+			{% endif %}
+		</td>
 	</tr>
 	<!-- workaround table rendering bug -->
 	<tr class="fixrow">
@@ -72,28 +128,47 @@
 	</tr>
 	<tr>
 		<td>Send Message</td>
-		<td><input type="text" name="message" style="width: 100%; border: none;" /></td>
-		<td colspan="3"><input type="submit" value="send" /></td>
+		<form method="post" action="{{ url_for('user_action') }}">
+			<input type="hidden" name="username" value="{{ name }}" />
+			<input type="hidden" name="action" value="tell" />
+			<td><input type="text" name="message" style="width: 100%; border: none;" /></td>
+			<td colspan="3"><input type="submit" value="send" /></td>
+		</form>
 	</tr>
 	<tr>
 		<td>Teleport</td>
+		<form method="post" action="{{ url_for('user_action') }}">
+			<input type="hidden" name="username" value="{{ name }}" />
+			<input type="hidden" name="action" value="teleport" />
 		<td>
-			<span id="usertarget">user</span>
-			<span id="positiontarget" style="display: none;">pos</span>
+			<span id="usertarget">
+				destination user:
+				<input type="text" name="destuser" />
+			</span>
+			<span id="positiontarget" style="display: none;">
+				x:&nbsp;<input type="text" name="dest_x" size="6" />&nbsp;
+				y:&nbsp;<input type="text" name="dest_y" size="6" />&nbsp;
+				z:&nbsp;<input type="text" name="dest_z" size="6" />&nbsp;
+			</span>
 		</td>
 		<td colspan="2">
-			<select name="target" onchange="select_tp_target(this.value);">
-				<option value="user" selected="selected">to other User</option>
-				<option value="position">to Coordinates</option>
+			<select name="target" id="tpsel" onchange="select_tp_target(this.value);">
+				<option value="user" selected="selected">to other user</option>
+				<option value="position">to coordinates</option>
 			</select>
 		</td>
 		<td style="width: 60px;"><input type="submit" value="TP" /></td>
+		</form>
 	</tr>
 	<tr>
 		<td>XP's</td>
 		<td></td>
-		<td colspan="2"><input type="text" name="amount" /></td>
-		<td><input type="submit" value="give" /></td>
+		<form method="post" action="{{ url_for('user_action') }}">
+			<input type="hidden" name="username" value="{{ name }}" />
+			<input type="hidden" name="action" value="xp" />
+			<td colspan="2"><input type="text" name="amount" style="width: 100%;" /></td>
+			<td><input type="submit" value="give" /></td>
+		</form>
 	</tr>
 	<tr>
 		<td rowspan="2">Give Items</td>

@@ -39,7 +39,7 @@
 					<br />
 					<ul style="margin: 0 15px;" class="multicolumn">
 						{% for user in info.connected_users %}
-							<li><a href="{{ url_for('user_details', name=user) }}" onmouseover="select_user('{{ user }}');">{{ user }}</a></li>
+							<li><a href="{{ url_for('user_details', username=user) }}" onmouseover="select_user('{{ user }}');">{{ user }}</a></li>
 						{% endfor %}
 					</ul>
 					<br />

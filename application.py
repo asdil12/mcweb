@@ -79,7 +79,8 @@ def server(action=None):
 	info = mcs.info()
 	mem = config.get('server_memory')
 	autos = config.get('server_autostart')
-	return render_template('server.html', navigation=get_navi(fname()), info=info, mem=mem, autos=autos)
+	username = request.args.get('username', 'default')
+	return render_template('server.html', navigation=get_navi(fname()), info=info, mem=mem, autos=autos, username=username)
 
 @app.route('/properties', methods=['GET', 'POST'])
 def properties():
@@ -103,14 +104,68 @@ def users():
 	"Users"
 	if 'username' not in session: return goto_login(fname(), fparms())
 	if request.method == 'POST':
-		return redirect(url_for('user_details', name=request.form.get('name')))
+		username = request.form.get('name')
+		if username:
+			return redirect(url_for('user_details', username=request.form.get('name')))
+		else:
+			return redirect(url_for('users'))
 	info = mcs.info()
 	return render_template('users.html', navigation=get_navi(fname()), info=info)
 
-@app.route('/users/<name>')
-def user_details(name):
-	user_info = userlists.get_user_info(name, check_online=True)
-	return render_template('user_details.html', navigation=get_navi('users'), info=user_info, name=name)
+@app.route('/users/<username>')
+def user_details(username):
+	if 'username' not in session: return goto_login(fname(), fparms())
+	user_info = userlists.get_user_info(username, check_online=True)
+	return render_template('user_details.html', navigation=get_navi('users'), info=user_info, name=username)
+
+@app.route('/user', methods=['GET', 'POST'])
+def user_action():
+	if 'username' not in session: return goto_login(fname(), fparms())
+	if request.method == 'GET':
+		return redirect(url_for('users'))
+	elif request.method == 'POST':
+		username = request.form.get('username')
+		action = request.form.get('action')
+		try:
+			if action == 'kick':
+				mcs.cmd('kick %s' % username)
+				flash('<i>%s</i> kicked.' % Markup.escape(username), 'success')
+			elif action == 'tell':
+				message = request.form.get('message')
+				mcs.cmd('tell %s %s' % (username, message))
+				flash('Message sent to <i>%s</i>.' % Markup.escape(username), 'success')
+			elif action == 'xp':
+				try:
+					amount = int(request.form.get('amount'))
+					if not 0 < amount < 5000:
+						raise ValueError
+					mcs.cmd('xp %s %s' % (amount, username))
+					flash('Gave %s XP\'s to <i>%s</i>.' % (amount, Markup.escape(username)), 'success')
+				except ValueError:
+					flash('Amount of XP\'s out of range of 1 - 5000.', 'error')
+			elif action == 'teleport':
+				try:
+					target = request.form.get('target')
+					if target == 'user':
+						destuser = request.form.get('destuser')
+						if userlists.get_user_info(destuser, check_online=True)['online']:
+							mcs.cmd('tp %s %s' % (username, destuser))
+							flash('Teleported <i>%s</i> to <i>%s</i>.' % (Markup.escape(username), Markup.escape(destuser)), 'success')
+						else:
+							flash('Destination user <i>%s</i> is not online.' % Markup.escape(destuser), 'error')
+					elif target == 'position':
+						x = int(request.form.get('dest_x'))
+						y = int(request.form.get('dest_y'))
+						z = int(request.form.get('dest_z'))
+						mcs.cmd('tp %s %d %d %d' % (username, x, y, z))
+						flash('Teleported <i>%s</i> to x:<i>%d</i>, y:<i>%d</i>, z:<i>%d</i>.' % (Markup.escape(username), x, y, z), 'success')
+						# server needs some time to answer after tp
+				except ValueError:
+					flash('Invalid target position.', 'error')
+		except mcserver.NotRunning:
+			flash('User interaction impossible when server is not running.', 'error')
+		returnpage = request.form.get('returnpage', 'user_details')
+		return redirect(url_for(returnpage, username=username))
 
 @app.route('/_users/<name>')
 def users_json(name):
@@ -147,7 +202,8 @@ def lists_edit(name=None):
 				flash('<i>%s</i> deleted from %s. %s' % (Markup.escape(item), listname, restartstring), 'success')
 			else:
 				flash('<i>%s</i> is not in %s.' % (Markup.escape(item), listname), 'info')
-		return redirect(url_for('lists'))
+		returnpage = request.form.get('returnpage', 'lists')
+		return redirect(url_for(returnpage, username=item))
 	return render_template('lists_delete.html', navigation=get_navi('lists'), name=name, action=action, item=item, listname=listname)
 
 # Skin proxy

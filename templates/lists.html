@@ -6,7 +6,7 @@
 <table>
 	{% for name in userlists.operators -%}
 		<tr class="{{ loop.cycle('odd', 'even') }}">
-			<td style="width: 200px;">{{ name }}</td>
+			<td style="width: 200px;"><a href="{{ url_for('user_details', username=name) }}">{{ name }}</a></td>
 			<td style="width: 45px;"><a href="{{ url_for('lists_edit', name='operators', action='delete', item=name) }}">Delete</a></td>
 		</tr>
 	{% endfor %}
@@ -25,7 +25,7 @@
 <table>
 	{% for name in userlists.whitelist -%}
 		<tr class="{{ loop.cycle('odd', 'even') }}">
-			<td style="width: 200px;">{{ name }}</td>
+			<td style="width: 200px;"><a href="{{ url_for('user_details', username=name) }}">{{ name }}</a></td>
 			<td style="width: 45px;"><a href="{{ url_for('lists_edit', name='whitelist', action='delete', item=name) }}">Delete</a></td>
 		</tr>
 	{% endfor %}
@@ -47,7 +47,7 @@
 <table>
 	{% for name in userlists.banned -%}
 		<tr class="{{ loop.cycle('odd', 'even') }}">
-			<td style="width: 200px;">{{ name }}</td>
+			<td style="width: 200px;"><a href="{{ url_for('user_details', username=name) }}">{{ name }}</a></td>
 			<td style="width: 45px;"><a href="{{ url_for('lists_edit', name='banned', action='delete', item=name) }}">Delete</a></td>
 		</tr>
 	{% endfor %}

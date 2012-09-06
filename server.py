@@ -128,7 +128,7 @@ class Server:
 		if self.running():
 			oldsize = os.path.getsize('mcs/server.log')
 			self.cmd(command)
-			for i in xrange(3):
+			for i in xrange(100):
 				if os.path.getsize('mcs/server.log') > oldsize: break
 				sleep(0.1)
 			mclogf = open('mcs/server.log')

@@ -1,2 +1,2 @@
-- post server -> list?return=server -> server
 - operators bold in connected_users (requires multi_user_info function to mimimize file IO)
+- set time via server page

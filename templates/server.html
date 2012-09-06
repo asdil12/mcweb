@@ -54,7 +54,7 @@
 	}
 
 	window.onload = function() {
-		select_user('default');
+		select_user('{{ username }}');
 	}
 </script>
 {% endblock %}
@@ -132,28 +132,33 @@
 			<form method="post" action="{{ url_for('lists_edit', name='operators') }}">
 				<input type="hidden" name="item" value="default" id="name_opsa" />
 				<input type="hidden" name="action" value="add" />
+				<input type="hidden" name="returnpage" value="server" />
 				<input type="submit" value="op" id="subm_opsa" class="playeract" title="Give the user operator status" disabled="disabled" />
 			</form>
 			<form method="post" action="{{ url_for('lists_edit', name='operators') }}">
 				<input type="hidden" name="item" value="default" id="name_opsr" />
 				<input type="hidden" name="action" value="delete" />
+				<input type="hidden" name="returnpage" value="server" />
 				<input type="submit" value="deop" id="subm_opsr" class="playeract" title="Remove operator status" disabled="disabled" />
 			</form>
 			<div style="height: 8px;"></div>
 			<form method="post" action="{{ url_for('lists_edit', name='banned') }}">
 				<input type="hidden" name="item" value="default" id="name_bana" />
 				<input type="hidden" name="action" value="add" />
+				<input type="hidden" name="returnpage" value="server" />
 				<input type="submit" value="ban" id="subm_bana" class="playeract" title="Ban the user" disabled="disabled" />
 			</form>
 			<form method="post" action="{{ url_for('lists_edit', name='banned') }}">
 				<input type="hidden" name="item" value="default" id="name_banr" />
 				<input type="hidden" name="action" value="delete" />
+				<input type="hidden" name="returnpage" value="server" />
 				<input type="submit" value="pardon" id="subm_banr" class="playeract" title="Remove the ban" disabled="disabled" />
 			</form>
 			<div style="height: 8px;"></div>
-			<form method="post" action="{{ url_for('users', list='kick') }}">
+			<form method="post" action="{{ url_for('user_action') }}">
 				<input type="hidden" name="username" value="default" id="name_kick" />
-				<input type="hidden" name="task" value="kick" />
+				<input type="hidden" name="action" value="kick" />
+				<input type="hidden" name="returnpage" value="server" />
 				<input type="submit" value="kick" id="subm_kick" class="playeract" title="Kick the user from the server" disabled="disabled" />
 			</form>
 		</td>
