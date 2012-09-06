@@ -11,6 +11,8 @@ Released   : 20080425
 
 */
 
+@import url('items.css');
+
 *
 {
 	margin: 0px;
@@ -299,3 +301,42 @@ br {
 	margin: 0;
 	border-bottom-color: #FFFFFF;
 }
+
+/* items */
+.itembox {
+	height: 32px;
+	width: 200px;
+	position: relative;
+	background-color: #EEEEEE;
+	margin: 2px;
+	border: 1px solid transparent;
+	padding: 2px 5px;
+	float: left;
+}
+
+/*.itembox.selected {*/
+input[type=radio]:checked ~ div.itembox {
+	border: 1px dotted #0000EE;
+	background-color: #a0a0ee;
+}
+
+.item-icon {
+	width: 32px;
+	height: 32px;
+	background-image: url('/static/images/items.png');
+	background-color: transparent;
+	background-repeat: non-repeat;
+	background-attachment: scroll;
+	position: absolute;
+}
+
+.item-text {
+	height: 32px;
+	line-height: 32px;
+	position: absolute;
+	left: 32px;
+	vertical-align: middle;
+	display: table-cell;
+	margin-left: 8px;
+}
+/* items end */

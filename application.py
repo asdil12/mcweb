@@ -12,15 +12,20 @@ from flask import flash
 from flask import jsonify
 from ftools import fname, fparms
 from frontend import *
+
+import config
+import items
 import properties as props
 import server as mcserver
 import admin as webadm
 from lists import Lists as UserLists
+
 import os
 import sys
-import config
 import signal
 import urllib2
+import json
+
 app = Flask(__name__)
 
 @app.route('/status')
@@ -116,7 +121,11 @@ def users():
 def user_details(username):
 	if 'username' not in session: return goto_login(fname(), fparms())
 	user_info = userlists.get_user_info(username, check_online=True)
-	return render_template('user_details.html', navigation=get_navi('users'), info=user_info, name=username)
+	items_json = {}
+	for item in items.get():
+		items_json[item['id']] = item['name']
+	items_json = json.dumps(items_json)
+	return render_template('user_details.html', navigation=get_navi('users'), info=user_info, name=username, items=items.get(), items_json=items_json)
 
 @app.route('/user', methods=['GET', 'POST'])
 def user_action():
