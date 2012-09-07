@@ -11,7 +11,7 @@ def get():
 	if not cache:
 		cache = []
 		i = 0
-		for row in csv.reader(open('items.csv', 'r'), delimiter=';', quotechar='#'):
+		for row in csv.reader(open('items.csv', 'r'), delimiter=';'):
 			cache.append({
 				'index': i,
 				'id': row[0],
