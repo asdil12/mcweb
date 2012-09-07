@@ -133,7 +133,12 @@ def user_details(username):
 	for item in items.get():
 		items_json[item['id']] = item['name']
 	items_json = json.dumps(items_json)
-	return render_template('user_details.html', navigation=get_navi('users'), info=user_info, name=username, items=items.get(), items_json=items_json)
+	mcs.prepare_nbt()
+	try:
+		pxp = mcs.get_player_xp(username)
+	except mcserver.NBT_IO_Exception:
+		pxp = None
+	return render_template('user_details.html', navigation=get_navi('users'), info=user_info, name=username, items=items.get(), items_json=items_json, pxp=pxp)
 
 @app.route('/user', methods=['GET', 'POST'])
 def user_action():
@@ -154,7 +159,7 @@ def user_action():
 			elif action == 'xp':
 				try:
 					amount = int(request.form.get('amount'))
-					if not 0 < amount < 5000:
+					if not 0 < amount <= 5000:
 						raise ValueError
 					mcs.cmd('xp %s %s' % (amount, username))
 					flash('Gave %s XP\'s to <i>%s</i>.' % (amount, Markup.escape(username)), 'success')

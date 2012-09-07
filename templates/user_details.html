@@ -10,7 +10,18 @@
 	var itemlist = {{ items_json|safe }};
 
 	function select_item(dataid) {
-		document.getElementById('current_item').value = itemlist[dataid];
+		document.getElementById('current_item_text').innerHTML = itemlist[dataid];
+		document.getElementById('current_item_icon').className = "item-icon dataid-" + dataid.replace(':', '-');
+		document.getElementById('itemid').value = dataid;
+	}
+
+	function manual_item(dataid) {
+		itemradios = document.getElementsByName("item");
+		for (var i = 0; i < itemradios.length; i++) {
+			if(itemradios[i].checked) document.getElementById(itemradios[i].id).checked = false;
+		}
+		document.getElementById('current_item_text').innerHTML = itemlist[dataid];
+		document.getElementById('current_item_icon').className = "item-icon dataid-" + dataid.replace(':', '-');
 	}
 
 	function select_user(username) {
@@ -169,7 +180,7 @@
 	</tr>
 	<tr>
 		<td>XP's</td>
-		<td></td>
+		<td>{{ pxp if not pxp == None else "<i>None</i>"|safe }}</td>
 		<form method="post" action="{{ url_for('user_action') }}">
 			<input type="hidden" name="username" value="{{ name }}" />
 			<input type="hidden" name="action" value="xp" />
@@ -178,12 +189,12 @@
 		</form>
 	</tr>
 	<tr>
-		<td rowspan="2">Give Items</td>
-		<td rowspan="2">
+		<td rowspan="3">Give Items</td>
+		<td rowspan="3">
 			<div style="overflow-y: scroll; height: 400px; width: 100%;">
 				{% for item in items %}
-					<label for="cbitem-{{ item.id.replace(':', '-') }}" title="{{ item.name }}">
-						<input type="radio" name="item" value="{{ item.id }}" id="cbitem-{{ item.id.replace(':', '-') }}" style="display: none;" onchange="select_item(this.value);">
+					<label for="cbitem-{{ item.id.replace(':', '-') }}">
+						<input type="radio" name="item" value="{{ item.id }}" id="cbitem-{{ item.id.replace(':', '-') }}" style="display: none;" onchange="select_item(this.value);" {{ 'checked="checked"' if item.id == '1' else '' }}>
 						<div class="itembox">
 							<div class="item-icon dataid-{{ item.id.replace(':', '-') }}"></div>
 							<div class="item-text">{{ item.name }}</div>
@@ -192,17 +203,28 @@
 				{% endfor %}
 			</div>
 		</td>
-		<td colspan="3">
-			current item
-			<input type="text" name="item" id="current_item" title="Decimal item id" style="width: 100%" />
+		<td colspan="3" style="text-align: center;">
+			<div style="padding: 2px; border: 1px solid #DADADA; display: inline-block; width: 32px; height: 32px; background-color: #F5F5F5;">
+				<div class="item-icon dataid-1" id="current_item_icon" style="position: static;"></div>
+			</div>
+			<br />
+			<span id="current_item_text">Stone</span>
+			<br />
+			<br />
 		</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="height: 21px;">
+			dataid:
+			<input type="text" name="itemid" id="itemid" value="1" size="5" onkeyup="manual_item(this.value);" />
+		</td>
+		<td rowspan="2"><input type="submit" value="give" /></td>
 	</tr>
 	<tr>
 		<td colspan="2" style="height: 21px;">
 			amount:
 			<input type="text" name="amount" value="1" size="5" />
-			</td>
-		<td><input type="submit" value="give" /></td>
+		</td>
 	</tr>
 </table>
 {% endblock %}
