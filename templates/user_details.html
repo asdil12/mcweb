@@ -182,7 +182,7 @@
 		<td rowspan="2">
 			<div style="overflow-y: scroll; height: 400px; width: 100%;">
 				{% for item in items %}
-					<label for="cbitem-{{ item.id.replace(':', '-') }}">
+					<label for="cbitem-{{ item.id.replace(':', '-') }}" title="{{ item.name }}">
 						<input type="radio" name="item" value="{{ item.id }}" id="cbitem-{{ item.id.replace(':', '-') }}" style="display: none;" onchange="select_item(this.value);">
 						<div class="itembox">
 							<div class="item-icon dataid-{{ item.id.replace(':', '-') }}"></div>

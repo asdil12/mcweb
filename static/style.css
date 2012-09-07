@@ -337,6 +337,7 @@ input[type=radio]:checked ~ div.itembox {
 	left: 32px;
 	vertical-align: middle;
 	display: table-cell;
-	margin-left: 8px;
+	margin-left: 10px;
+	text-align: left;
 }
 /* items end */
