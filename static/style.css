@@ -341,3 +341,22 @@ input[type=radio]:checked ~ div.itembox {
 	text-align: left;
 }
 /* items end */
+
+/* time bar */
+.timebar {
+	text-align: center;
+	width: 100%;
+	height: 21px;
+	background: -moz-linear-gradient(left, #3b3bff -5%, #feff9d 5%, yellow 22.5%, yellow 40%, #f77047 45%, #2f2fbe 55%, #000060 77.5%, #4040be 95%, #feff9d 105%);
+	background: -webkit-linear-gradient(left, #3b3bff -5%, #feff9d 5%, yellow 22.5%, yellow 40%, #f77047 45%, #2f2fbe 55%, #000060 77.5%, #4040be 95%, #feff9d 105%);
+	position: relative;
+}
+.timebar .pointer {
+	position: absolute;
+	width: 2px;
+	height: 19px;
+	background-color: black;
+	border: 1px solid white;
+	margin-left: -2px;
+}
+/* time bar end */

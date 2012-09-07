@@ -7,6 +7,8 @@ import config
 import zipfile
 from time import sleep
 
+from nbt.nbt import NBTFile
+
 # java -Xms1536M -Xmx1536M -jar minecraft_server.jar nogui 
 #        ^ min     ^ max  memory in MB
 # min: reserved on startup
@@ -16,6 +18,9 @@ class NotRunning(Exception):
 	pass
 
 class CommunicationError(Exception):
+	pass
+
+class NBT_IO_Exception(Exception):
 	pass
 
 def check_pid(pid):
@@ -169,3 +174,54 @@ class Server:
 		if self.running():
 			info['connected_users'] = self.connected_users()
 		return info
+
+	#
+	# NBT based methods
+	#
+	# thanks to https://github.com/pcsforeducation/PyRedstone/blob/master/pyredstone/pyredstone.py
+
+	def prepare_nbt(self):
+		try:
+			self.cmd('save-all')
+			return True
+		except NotRunning:
+			return False
+
+	def _get_player_nbt(self, player):
+		nbt_file = os.path.join('mcs', 'world', 'players', player + '.dat')
+		if not os.path.exists(nbt_file):
+			raise NBT_IO_Exception
+		return NBTFile(nbt_file)
+
+	def get_player_xp(self, player):
+		n = self._get_player_nbt(player)
+		return n["XpLevel"].value
+
+	def get_player_health(self, player):
+		n = self._get_player_nbt(player)
+		return n["Health"].value
+
+	def get_player_location(self, player):
+		n = self._get_player_nbt(player)
+		loc_list = n["Pos"]
+		return (loc_list[0].value, loc_list[1].value, loc_list[2].value)
+
+	def get_time(self):
+		""" Gets the current in game time. Returns the time as an int between
+		0 and 23999, or None if the time cannot be found.
+		"""
+		n = NBTFile('mcs/world/level.dat')
+		if n == None:
+			return None
+		else:
+			return n[0]["Time"].value % 24000
+
+	def get_spawn(self):
+		""" Finds the spawn coordinates. Returns a 3tuple of ints in the format
+		(X, Y, Z) or None if the coordinates cannot be found.
+		"""
+		n = NBTFile('mcs/world/level.dat')
+		if n == None:
+			return None
+		else:
+			return {'x': n[0]["SpawnX"].value, 'y': n[0]["SpawnY"].value, 'z': n[0]["SpawnZ"].value}

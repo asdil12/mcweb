@@ -6,6 +6,9 @@
 {{ super() }}
 <script src="{{ url_for('static', filename='minecraft_skin.js') }}" type="text/javascript"></script>
 <script type="text/javascript">
+
+	var mctime = {{ servertime }};
+
 	function select_user(username) {
 		document.getElementById('subm_opsa').disabled = true;
 		document.getElementById('subm_opsr').disabled = true;
@@ -53,7 +56,16 @@
 		}
 	}
 
+	function run_time() {
+		mctime = mctime + 15;
+		mctime = mctime % 24000;
+		document.getElementById('tpointer').style.left = (mctime / 240) + '%';
+		document.getElementById('tpointer').title = mctime;
+		setTimeout(run_time, 750);
+	}
+
 	window.onload = function() {
+		{{ 'run_time();' if info.running else '' }}
 		select_user('{{ username }}');
 	}
 </script>
@@ -172,6 +184,25 @@
 			<td><input type="text" name="message" style="width: 100%; border: none;" /></td>
 			<td colspan="2">
 					<input type="submit" value="send" />
+			</td>
+		</form>
+	</tr>
+	<tr>
+		<td>Server Time</td>
+		<td>
+			<div class="timebar"><div class="pointer" id="tpointer" style="left: {{ servertime / 240 }}%;"></div></div>
+		</td>
+		<form method="post" action="{{ url_for('server', action='timeset') }}" style="display: inline;">
+			<td style="width: 100px;">
+				<select name="time">
+					<option value="1">Dawn</option>
+					<option value="6000">Midday</option>
+					<option value="12000">Dusk</option>
+					<option value="18000">Midnight</option>
+				</select>
+			</td>
+			<td style="width: 60px;">
+					<input type="submit" value="set" />
 			</td>
 		</form>
 	</tr>

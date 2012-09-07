@@ -1,3 +1,5 @@
+pip install Flask NBT
+
 the default login details are:
 user: admin
 pass: password

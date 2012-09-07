@@ -80,12 +80,20 @@ def server(action=None):
 				flash('Announcement sent.', 'success')
 			except mcserver.NotRunning:
 				flash('Announcement impossible when server is not running.', 'error')
+		elif action == 'timeset':
+			newtime = int(request.form.get('time', '1')) % 24000
+			try:
+				mcs.cmd('time set %d' % newtime)
+				flash('Time set to value <i>%s</i>.' % newtime, 'success')
+			except mcserver.NotRunning:
+				flash('Time setting impossible when server is not running.', 'error')
 		return redirect(url_for('server'))
 	info = mcs.info()
 	mem = config.get('server_memory')
 	autos = config.get('server_autostart')
 	username = request.args.get('username', 'default')
-	return render_template('server.html', navigation=get_navi(fname()), info=info, mem=mem, autos=autos, username=username)
+	mcs.prepare_nbt()
+	return render_template('server.html', navigation=get_navi(fname()), info=info, mem=mem, autos=autos, username=username, servertime=mcs.get_time())
 
 @app.route('/properties', methods=['GET', 'POST'])
 def properties():
