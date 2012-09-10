@@ -2,6 +2,7 @@
 
 import os
 import re
+import sys
 import subprocess
 import config
 import zipfile
@@ -51,7 +52,8 @@ class Server:
 	def start(self):
 		if self.running():
 			return False
-		print "Starting minecraft server"
+		print "Starting minecraft server ... ",
+		sys.stdout.flush()
 		mem = config.get('server_memory')
 		cmd = ['java', '-Xms%dM' % mem, '-Xmx%dM' % mem, '-jar', 'minecraft_server.jar', 'nogui']
 		Server.process = subprocess.Popen(cmd, cwd='mcs',
@@ -73,6 +75,7 @@ class Server:
 					log = f.read()
 					f.close()
 					if Server.start_regex.search(log):
+						print "\bDONE"
 						return True
 					else:
 						f = open('mcs/server.log')
@@ -89,19 +92,23 @@ class Server:
 	def stop(self):
 		if not self.running():
 			return False
-		print "Stopping minecraft server"
+		print "Stopping minecraft server ... ",
+		sys.stdout.flush()
 		self.cmd('stop')
 		sleep(0.5)
 		for i in xrange(6):
 			if not self.running():
+				print "\bDONE"
 				return 1
 			sleep(0.5)
 		Server.process.terminate()
 		for i in xrange(6):
 			if not self.running():
+				print "\bDONE"
 				return 5
 			sleep(0.5)
 		Server.process.kill()
+		print "\bDONE"
 		return 9
 
 	def running(self):
