@@ -71,7 +71,7 @@ class Server:
 
 		oldsize = os.path.getsize('mcs/server.log') if os.path.isfile('mcs/server.log') else 0
 		lastsize = oldsize
-		i = 10
+		i = 30
 		while i > 0:
 			if os.path.isfile('mcs/server.log'):
 				size = os.path.getsize('mcs/server.log') if os.path.isfile('mcs/server.log') else 0
