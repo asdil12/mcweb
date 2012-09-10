@@ -171,6 +171,11 @@ class Server:
 		except AttributeError:
 			raise CommunicationError()
 
+	def known_users(self):
+		dirlist = os.listdir('mcs/world/players')
+		userlist = [filename.replace('.dat', '') for filename in dirlist]
+		return userlist
+
 	def get_version(self):
 		try:
 			z = zipfile.ZipFile('mcs/minecraft_server.jar', 'r')
@@ -184,11 +189,12 @@ class Server:
 		info = {}
 		info['running'] = self.running()
 		info['version'] = self.get_version()
+		info['known_users'] = self.known_users()
 		if self.running():
 			info['connected_users'] = self.connected_users()
 		return info
 
-	def log(self, window=20):
+	def log(self, window=100):
 		try:
 			return _tail('mcs/server.log', window)
 		except IOError:

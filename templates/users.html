@@ -25,14 +25,14 @@
 				<input type="submit" value="OK" />
 			</form>
 		</td>
-		<td style="width: 120px;" rowspan="2" id="skintd" class="loading">
+		<td style="width: 120px;" rowspan="3" id="skintd" class="loading">
 			<canvas id="player_scratch" style="display: none;"></canvas>
 			<canvas class="model" id="player_model" width="60" height="134"></canvas>
 		</td>
 	</tr>
 	<tr>
 		<td style="width: 130px;">Connected Users</td>
-		<td {% if info.connected_users|length > 0 %}style="text-align: left; vertical-align: top;"{% endif %}>
+		<td style="{% if info.connected_users|length > 0 %}text-align: left; vertical-align: top; padding: 0.2em 0.2em 1em 0.2em;{% else %}padding: 1em 0.2em;{% endif %}">
 			{% if info.running %}
 				{% if info.connected_users|length > 0 %}
 					<div style="text-align: center;">{{ info.connected_users|length }} User{{ 's' if info.connected_users|length > 1 else '' }}</div>
@@ -46,6 +46,21 @@
 				{% else %}
 					<i>None</i>
 				{% endif %}
+			{% else %}
+				<i>None</i>
+			{% endif %}
+		</td>
+	</tr>
+	<tr>
+		<td style="width: 130px;">Known Users</td>
+		<td {% if info.known_users|length > 0 %}style="text-align: left;"{% endif %}>
+			{% if info.known_users|length > 0 %}
+				<ul style="margin: 0 15px;" class="multicolumn">
+					{% for user in info.known_users %}
+						<li><a href="{{ url_for('user_details', username=user) }}" onmouseover="select_user('{{ user }}');">{{ user }}</a></li>
+					{% endfor %}
+				</ul>
+				<br />
 			{% else %}
 				<i>None</i>
 			{% endif %}

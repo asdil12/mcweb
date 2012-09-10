@@ -371,4 +371,5 @@ pre {
 	background-color: #F5F5F5;
 	border: 1px solid #DADADA;
 	color: #222222;
+	white-space: pre-wrap;
 }
