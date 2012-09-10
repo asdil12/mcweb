@@ -24,7 +24,7 @@ class CommunicationError(Exception):
 class NBT_IO_Exception(Exception):
 	pass
 
-def check_pid(pid):
+def _check_pid(pid):
 	""" Check For the existence of a unix pid. """
 	try:
 		os.kill(pid, 0)
@@ -32,6 +32,12 @@ def check_pid(pid):
 		return False
 	else:
 		return True
+
+def _tail(f, n=20):
+	stdin,stdout = os.popen2("tail -n %d %s" % (n, f))
+	stdin.close()
+	lines = stdout.readlines(); stdout.close()
+	return ''.join(lines)
 
 class Server:
 	player_regex = re.compile(r"There are \d+/\d+ players online:\n.*\[INFO\] (.*)\n")
@@ -120,7 +126,7 @@ class Server:
 			else:
 				try:
 					pid = int(open('mcs/pid.lock').read())
-					if check_pid(pid):
+					if _check_pid(pid):
 						print "got running pid %d" % pid
 						return True
 				except:
@@ -181,6 +187,12 @@ class Server:
 		if self.running():
 			info['connected_users'] = self.connected_users()
 		return info
+
+	def log(self, window=20):
+		try:
+			return _tail('mcs/server.log', window)
+		except IOError:
+			return ''
 
 	#
 	# NBT based methods

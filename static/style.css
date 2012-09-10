@@ -360,3 +360,15 @@ input[type=radio]:checked ~ div.itembox {
 	margin-left: -2px;
 }
 /* time bar end */
+
+tt, pre {
+	font-family: "monospace", monospace;
+	font-size: 90%;
+}
+
+pre {
+	overflow: auto;
+	background-color: #F5F5F5;
+	border: 1px solid #DADADA;
+	color: #222222;
+}

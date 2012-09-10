@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block titlepath %} :: Log{% endblock %}
+{% block ctitle %}Server Log{% endblock %}
+{% block csubtitle %}The last lines of minecraft's <i>server.log</i>{% endblock %}
+{% block content %}
+<pre>{{ log }}</pre>
+{% endblock %}

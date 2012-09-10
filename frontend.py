@@ -10,6 +10,7 @@ def get_navi(active=None):
 		'users',
 		'lists',
 		'admins',
+		'logs',
 		'login'
 	]
 	if 'username' in session:

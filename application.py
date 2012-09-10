@@ -293,6 +293,12 @@ def admins_edit(name=None):
 		return redirect(url_for('admins'))
 	return render_template('admins_edit.html', navigation=get_navi('admins'), admin=name, action=action)
 
+@app.route('/logs')
+def logs():
+	"Logs"
+	if 'username' not in session: return goto_login(fname(), fparms())
+	return render_template('log.html', navigation=get_navi(fname()), log=mcs.log())
+
 # Login / Logout
 @app.route('/login', methods=['GET', 'POST'])
 def login():
