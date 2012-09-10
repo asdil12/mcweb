@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block titlepath %} :: Log{% endblock %}
 {% block ctitle %}Server Log{% endblock %}
-{% block csubtitle %}The last lines of minecraft's <i>server.log</i>{% endblock %}
+{% block csubtitle %}The content of minecraft's <i>server.log</i>{% endblock %}
 {% block content %}
 <script type="text/javascript">
 	window.onload = function() {
@@ -9,5 +9,5 @@
 		logdiv.scrollTop = logdiv.scrollHeight;
 	}
 </script>
-<pre style="height: 30.5em;" id="log">{{ log }}</pre>
+<pre style="height: 33.5em;" id="log">{{ log }}</pre>
 {% endblock %}

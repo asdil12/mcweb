@@ -194,9 +194,12 @@ class Server:
 			info['connected_users'] = self.connected_users()
 		return info
 
-	def log(self, window=100):
+	def log(self, window=None):
 		try:
-			return _tail('mcs/server.log', window)
+			if isinstance(window, int):
+				return _tail('mcs/server.log', window)
+			else:
+				return open('mcs/server.log').read()
 		except IOError:
 			return ''
 
