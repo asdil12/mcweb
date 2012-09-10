@@ -3,5 +3,11 @@
 {% block ctitle %}Server Log{% endblock %}
 {% block csubtitle %}The last lines of minecraft's <i>server.log</i>{% endblock %}
 {% block content %}
-<pre style="height: 30.5em;">{{ log }}</pre>
+<script type="text/javascript">
+	window.onload = function() {
+		var logdiv = document.getElementById("log");
+		logdiv.scrollTop = logdiv.scrollHeight;
+	}
+</script>
+<pre style="height: 30.5em;" id="log">{{ log }}</pre>
 {% endblock %}
