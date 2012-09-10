@@ -172,9 +172,12 @@ class Server:
 			raise CommunicationError()
 
 	def known_users(self):
-		dirlist = os.listdir('mcs/world/players')
-		userlist = [filename.replace('.dat', '') for filename in dirlist]
-		return userlist
+		try:
+			dirlist = os.listdir('mcs/world/players')
+			userlist = [filename.replace('.dat', '') for filename in dirlist]
+			return userlist
+		except OSError:
+			return []
 
 	def get_version(self):
 		try:
