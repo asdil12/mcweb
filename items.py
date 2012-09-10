@@ -21,6 +21,9 @@ def get():
 	return cache
 
 def get_by_id(dataid):
-	lst = get()
-	index = next(index for (index, d) in enumerate(lst) if d["id"] == dataid)
-	return lst[index]
+	try:
+		lst = get()
+		index = next(index for (index, d) in enumerate(lst) if d["id"] == dataid)
+		return lst[index]
+	except StopIteration:
+		raise KeyError

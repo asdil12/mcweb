@@ -149,7 +149,7 @@
 		<form method="post" action="{{ url_for('user_action') }}">
 			<input type="hidden" name="username" value="{{ name }}" />
 			<input type="hidden" name="action" value="tell" />
-			<td><input type="text" name="message" style="width: 100%; border: none;" /></td>
+			<td><input type="text" name="message" style="width: 100%;" /></td>
 			<td colspan="3"><input type="submit" value="send" /></td>
 		</form>
 	</tr>
@@ -213,18 +213,22 @@
 			<br />
 		</td>
 	</tr>
-	<tr>
-		<td colspan="2" style="height: 21px;">
-			dataid:
-			<input type="text" name="itemid" id="itemid" value="1" size="5" onkeyup="manual_item(this.value);" />
-		</td>
-		<td rowspan="2"><input type="submit" value="give" /></td>
-	</tr>
-	<tr>
-		<td colspan="2" style="height: 21px;">
-			amount:
-			<input type="text" name="amount" value="1" size="5" />
-		</td>
-	</tr>
+	<form method="post" action="{{ url_for('user_action') }}">
+		<input type="hidden" name="username" value="{{ name }}" />
+		<input type="hidden" name="action" value="give" />
+		<tr>
+			<td colspan="2" style="height: 21px;">
+				dataid:
+				<input type="text" name="itemid" id="itemid" value="1" size="5" onkeyup="manual_item(this.value);" />
+			</td>
+			<td rowspan="2"><input type="submit" value="give" /></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="height: 21px;">
+				amount:
+				<input type="text" name="amount" value="1" size="5" />
+			</td>
+		</tr>
+	</form>
 </table>
 {% endblock %}

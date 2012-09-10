@@ -162,7 +162,7 @@ def user_action():
 					if not 0 < amount <= 5000:
 						raise ValueError
 					mcs.cmd('xp %s %s' % (amount, username))
-					flash('Gave %s XP\'s to <i>%s</i>.' % (amount, Markup.escape(username)), 'success')
+					flash('Gave %d XP\'s to <i>%s</i>.' % (amount, Markup.escape(username)), 'success')
 				except ValueError:
 					flash('Amount of XP\'s out of range of 1 - 5000.', 'error')
 			elif action == 'teleport':
@@ -184,6 +184,24 @@ def user_action():
 						# server needs some time to answer after tp
 				except ValueError:
 					flash('Invalid target position.', 'error')
+			elif action == 'give':
+				try:
+					amount = int(request.form.get('amount'))
+					itemid = request.form.get('itemid')
+					if not 0 < amount <= 64:
+						raise ValueError
+					if itemid.find(':') != -1:
+						item, data = itemid.split(':')
+						mcs.cmd('give %s %d %d %d' % (username, int(item), amount, int(data)))
+					else:
+						mcs.cmd('give %s %d %d' % (username, int(itemid), amount))
+					try:
+						itemname = items.get_by_id(itemid)['name']
+					except KeyError:
+						itemname = idemid
+					flash('Gave %d <i>%s</i> to <i>%s</i>.' % (amount, Markup.escape(itemname), Markup.escape(username)), 'success')
+				except ValueError:
+					flash('Amount of item\'s out of range of 1 - 64.', 'error')
 		except mcserver.NotRunning:
 			flash('User interaction impossible when server is not running.', 'error')
 		returnpage = request.form.get('returnpage', 'user_details')
