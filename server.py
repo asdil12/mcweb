@@ -200,9 +200,9 @@ class Server:
 	def log(self, window=None):
 		try:
 			if isinstance(window, int):
-				return _tail('mcs/server.log', window)
+				return _tail('mcs/server.log', window).decode('UTF-8')
 			else:
-				return open('mcs/server.log').read()
+				return open('mcs/server.log').read().decode('UTF-8')
 		except IOError:
 			return ''
 
