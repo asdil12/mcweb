@@ -245,7 +245,7 @@ class Server:
 		if n == None:
 			return None
 		else:
-			return n[0]["Time"].value % 24000
+			return n[0]["DayTime"].value % 24000
 
 	def get_spawn(self):
 		""" Finds the spawn coordinates. Returns a 3tuple of ints in the format
