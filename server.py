@@ -43,7 +43,7 @@ class Server:
 	player_regex = re.compile(r"There are \d+/\d+ players online:\n.*\[INFO\] (.*)\n")
 	start_regex = re.compile(r"For help, type \"help\" or \"\?\"")
 	prepare_regex = re.compile(r"Preparing")
-	version_regex = re.compile("minecraft server version (\d+\.\d+\.\d+)")
+	version_regex = re.compile("(\d+\.\d+\.\d+)")
 	process = None
 
 	def __init__(self):
@@ -182,7 +182,9 @@ class Server:
 	def get_version(self):
 		try:
 			z = zipfile.ZipFile('mcs/minecraft_server.jar', 'r')
-			ft = z.read('hg.class')
+			# 00000070  56 01 00 05 31 2e 33 2e  32 01 00 06 3c 69 6e 69  |V...1.3.2...<ini|
+			# 00000070  56 01 00 05 31 2e 34 2e  34 01 00 06 3c 69 6e 69  |V...1.4.4...<ini|
+			ft = z.read('b.class')[0x74:]
 			version = Server.version_regex.search(ft).group(1)
 			return version
 		except (IOError, AttributeError):
