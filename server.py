@@ -185,7 +185,7 @@ class Server:
 			ft = z.read('hg.class')
 			version = Server.version_regex.search(ft).group(1)
 			return version
-		except IOError, AttributeError:
+		except (IOError, AttributeError):
 			return 'NONE'
 
 	def info(self):
