@@ -17,6 +17,8 @@ tpl = [
 		'desc': 'Enables GameSpy4 protocol server listener. Used to get information about server.'},
 	{'key': 'enable-rcon', 'type': 'bool', 'default': False,
 		'desc': 'Enables remote access to the server console.'},
+	{'key': 'enable-command-block', 'type': 'bool', 'default': False,
+		'desc': 'Enables Command-Blocks on the server.'},
 	{'key': 'gamemode', 'type': 'enum', 'default': 0,
 		'enum': [{'key': 0, 'value': 'Survival'}, {'key': 1, 'value': 'Creative'}, {'key': 2, 'value': 'Adventure'}],
 		'desc': 'Defines the mode of gameplay.'},
