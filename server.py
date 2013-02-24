@@ -187,7 +187,7 @@ class Server:
 			ft = z.read('b.class')[0x74:]
 			version = Server.version_regex.search(ft).group(1)
 			return version
-		except (IOError, AttributeError):
+		except (IOError, AttributeError, KeyError):
 			return 'NONE'
 
 	def info(self):
