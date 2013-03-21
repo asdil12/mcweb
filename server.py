@@ -182,9 +182,7 @@ class Server:
 	def get_version(self):
 		try:
 			z = zipfile.ZipFile('mcs/minecraft_server.jar', 'r')
-			# 00000070  56 01 00 05 31 2e 33 2e  32 01 00 06 3c 69 6e 69  |V...1.3.2...<ini|
-			# 00000070  56 01 00 05 31 2e 34 2e  34 01 00 06 3c 69 6e 69  |V...1.4.4...<ini|
-			ft = z.read('b.class')[0x74:]
+			ft = z.read('net/minecraft/server/MinecraftServer.class')
 			version = Server.version_regex.search(ft).group(1)
 			return version
 		except (IOError, AttributeError, KeyError):
